@@ -43,20 +43,25 @@ export const api = createTRPCProxyClient<AppRouter>({
     () =>
       ({ op }) =>
         observable((observer) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           createContext()
             .then((ctx) => {
               return callProcedure({
                 procedures: appRouter._def.procedures,
                 path: op.path,
                 rawInput: op.input,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 ctx,
                 type: op.type,
               });
             })
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             .then((data) => {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               observer.next({ result: { data } });
               observer.complete();
             })
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             .catch((cause: TRPCErrorResponse) => {
               observer.error(TRPCClientError.from(cause));
             });
